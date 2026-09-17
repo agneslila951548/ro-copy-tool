@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RO 文字一鍵複製工具</title>
+<style>
+body{font-family:system-ui,"Microsoft JhengHei",sans-serif;max-width:760px;margin:40px auto;padding:0 18px;background:#f5f6f8;color:#222} .card{background:#fff;border:1px solid #ddd;border-radius:14px;padding:20px;margin-bottom:16px}h1{margin-top:0}textarea{width:100%;min-height:130px;box-sizing:border-box;padding:12px;border:1px solid #ccc;border-radius:9px;font-size:16px}button{border:0;border-radius:8px;padding:10px 15px;margin:8px 6px 0 0;cursor:pointer;font-weight:700}.copy{background:#1769e0;color:#fff}.add{background:#198754;color:#fff}.del{background:#eee}.item{border:1px solid #ddd;border-radius:10px;padding:12px;margin-top:10px}.text{white-space:pre-wrap;word-break:break-word;line-height:1.6}.status{min-height:24px;color:#666;margin-top:10px}
+</style></head>
+<body>
+<h1>RO 文字一鍵複製工具</h1>
+<div class="card"><p>輸入要貼到台灣官方《仙境傳說 RO》的文字，按「加入文字」，即可產生一鍵複製按鈕。</p><textarea id="input" placeholder="例如：可以吞噬海洋的巨大蟒蛇"></textarea><br><button class="add" onclick="addText()">＋加入文字</button><button class="del" onclick="clearAll()">清空全部</button><div id="status" class="status"></div></div>
+<div class="card"><h2>文字列表</h2><div id="list"></div></div>
+<script>
+const input=document.getElementById('input'),list=document.getElementById('list'),status=document.getElementById('status');
+function addText(){const t=input.value;if(!t.trim()){status.textContent='請先輸入文字。';return}const d=document.createElement('div');d.className='item';const p=document.createElement('div');p.className='text';p.textContent=t;const b=document.createElement('button');b.className='copy';b.textContent='📋 一鍵複製';b.onclick=()=>copyText(t,b);const x=document.createElement('button');x.className='del';x.textContent='刪除';x.onclick=()=>d.remove();d.append(p,b,x);list.prepend(d);input.value='';status.textContent='已加入。'}
+async function copyText(t,b){try{await navigator.clipboard.writeText(t);done(b)}catch(e){const a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');done(b)}catch(e){status.textContent='自動複製失敗，請手動選取文字後 Ctrl+C。'}a.remove()}}
+function done(b){const old=b.textContent;b.textContent='✓ 已複製';status.textContent='已複製到剪貼簿，可以回到 RO 貼上。';setTimeout(()=>{b.textContent=old;status.textContent=''},1500)}
+function clearAll(){list.innerHTML='';status.textContent='已清空。'}
+addTextFromDefault();function addTextFromDefault(){input.value='可以吞噬海洋的巨大蟒蛇';addText()}
+</script></body></html>
